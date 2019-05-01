@@ -1,0 +1,7 @@
+# source .env
+export SLACK_API_TOKEN=xoxp-xxx
+export SLACK_CLIENT_ID=348.611xxx
+export SLACK_CLIENT_SECRET=8fdxxx
+export SLACK_REDIRECT_URI=https://{domain}/oauth
+export GOOGLE_PROJECT_ID=xxx
+export GOOGLE_KEY=xxx-xxx-xxx-xxx

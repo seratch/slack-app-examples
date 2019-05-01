@@ -1,0 +1,33 @@
+{
+  "name": "foo-app",
+  "version": "1.0.0",
+  "description": "Serverless webpack example using Typescript",
+  "main": "handler.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "dependencies": {
+    "@google-cloud/translate": "2.1.4",
+    "@slack/events-api": "^2.2.0",
+    "@slack/web-api": "^5.0.1",
+    "@types/express": "^4.16.1",
+    "body-parser": "^1.19.0",
+    "express": "^4.16.4",
+    "seratch-slack-app-toolkit": "0.0.4",
+    "seratch-slack-types": "^0.1.1",
+    "serverless": "^1.41.1",
+    "serverless-http": "^2.0.1",
+    "source-map-support": "^0.5.10"
+  },
+  "devDependencies": {
+    "@types/aws-lambda": "^8.10.17",
+    "@types/node": "^10.12.18",
+    "serverless-offline": "^4.9.4",
+    "serverless-webpack": "^5.2.0",
+    "ts-loader": "^5.3.3",
+    "typescript": "^3.2.4",
+    "webpack": "^4.29.0"
+  },
+  "author": "The serverless webpack authors (https://github.com/elastic-coders/serverless-webpack)",
+  "license": "MIT"
+}
