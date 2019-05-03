@@ -9,7 +9,7 @@
 // Slack Web API Types
 import * as SlackWebApi from 'seratch-slack-types/web-api';
 
-// NOTE: may remove this dependency when app.client gets to work in the future
+// Slack Web Client with sufficient scopes
 import * as SlackClient from '@slack/web-api';
 const slackApiClient = new SlackClient.WebClient(process.env.SLACK_API_TOKEN);
 

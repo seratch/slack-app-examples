@@ -27,7 +27,10 @@ type ReactionAdded = SlackEventsApi.ReactionAddedPayload;
 const Op = SlackAppToolkit.EventsApi.EventsApiOperation;
 type OpArgs<A> = SlackAppToolkit.EventsApi.EventsApiOperationArgs<A>;
 
+// Slack Web Client with sufficient scopes
 export const slackApi = new Slack.WebClient(process.env.SLACK_API_TOKEN);
+// A framework to handle Slack Events crafted by @seratch
+// You should take a look at https://github.com/slackapi/bolt too
 const slackEventsOperator = new SlackAppToolkit.EventsApi.EventsApiOperator();
 
 // ----------------
