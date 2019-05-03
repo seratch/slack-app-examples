@@ -1,0 +1,29 @@
+service: reacjilator-ruby
+
+provider:
+  name: aws
+  region: ap-northeast-1
+  stage: ${opt:stage, 'dev'}
+  runtime: ruby2.5
+  environment:
+    SLACK_API_TOKEN: ${env:SLACK_API_TOKEN}
+    SLACK_SIGNING_SECRET: ${env:SLACK_SIGNING_SECRET}
+    GOOGLE_APPLICATION_CREDENTIALS: ${env:GOOGLE_APPLICATION_CREDENTIALS}
+    SERVERLESS_STAGE: ${opt:stage, 'dev'}
+
+plugins:
+  - serverless-offline
+  - serverless-hooks-plugin
+
+custom:
+  hooks:
+    package:initialize:
+      - bundle install --deployment
+
+functions:
+  events:
+    handler: handler.events
+    events:
+      - http:
+          path: /slack/events
+          method: post
