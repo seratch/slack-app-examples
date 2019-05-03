@@ -15,6 +15,15 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     </properties>
 
+    <!--
+    <repositories>
+        <repository>
+            <id>sonatype staging</id>
+            <url>https://oss.sonatype.org/content/repositories/staging</url>
+        </repository>
+    </repositories>
+    -->
+
     <dependencies>
         <dependency>
             <groupId>org.projectlombok</groupId>
@@ -25,7 +34,7 @@
         <dependency>
             <groupId>com.github.seratch</groupId>
             <artifactId>jslack</artifactId>
-            <version>1.5.4</version>
+            <version>1.5.5</version>
         </dependency>
         <dependency>
             <groupId>com.google.cloud</groupId>

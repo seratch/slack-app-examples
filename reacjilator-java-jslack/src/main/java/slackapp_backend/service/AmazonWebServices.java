@@ -34,4 +34,9 @@ public class AmazonWebServices {
         return System.getenv("SERVERLESS_STAGE");
     }
 
+    // when running by `sam local start-api`
+    public boolean isLocalDev(Context context) {
+        return context != null && context.getFunctionName().equals("test");
+    }
+
 }

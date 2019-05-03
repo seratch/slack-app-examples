@@ -6,6 +6,7 @@ import com.amazonaws.services.lambda.runtime.RequestHandler;
 import com.github.seratch.jslack.app_backend.events.payload.UrlVerificationPayload;
 import com.github.seratch.jslack.app_backend.vendor.aws.lambda.request.ApiGatewayRequest;
 import com.github.seratch.jslack.app_backend.vendor.aws.lambda.response.ApiGatewayResponse;
+import com.github.seratch.jslack.app_backend.vendor.aws.lambda.util.SlackSignatureVerifier;
 import com.github.seratch.jslack.common.json.GsonFactory;
 import com.google.gson.Gson;
 import com.google.gson.JsonElement;
@@ -22,11 +23,16 @@ public class SlackEventsHandler implements RequestHandler<ApiGatewayRequest, Api
 
     private final AmazonWebServices AWS = new AmazonWebServices();
     private final SlackEventsOperator slackEventsOperator = SlackEventsOperator.getInstance();
+    private final SlackSignatureVerifier signatureVerifier = new SlackSignatureVerifier();
     private final Gson gson = GsonFactory.createSnakeCase();
 
     @Override
     public ApiGatewayResponse handleRequest(ApiGatewayRequest req, Context context) {
         logRequest(req, context);
+
+        if (!signatureVerifier.isValid(req) && !AWS.isLocalDev(context)) {
+            return ApiGatewayResponse.builder().setStatusCode(401).build();
+        }
 
         String body = req.getBody();
         if (body == null || body.equals(WarmupHandler.PAYLOAD_STRING)) {
@@ -40,7 +46,7 @@ public class SlackEventsHandler implements RequestHandler<ApiGatewayRequest, Api
                 return handleUrlVerification(payload);
             } else {
                 // events subscription
-                if (context.getFunctionName().equals("test")) { // when running by `sam local start-api`
+                if (AWS.isLocalDev(context)) {
                     // local dev
                     slackEventsOperator.handleSynchronously(body);
                     // may be timed out towards requests from Slack Platform
