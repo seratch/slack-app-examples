@@ -5,18 +5,21 @@
 # MIT License as with the original code
 #
 
-import html
-import six
-from google.cloud import translate
-import json
 import re
 import os
+import json
 
-# --------------------
-# Slack API
+# Google
+from google.cloud import translate
+import six
+import html
+
+# Slack
 import slack
 from slackeventsapi import SlackEventAdapter
 
+# --------------------
+# Slack API
 # Slack Web API Client with sufficient permissions
 slack_web_api_client = slack.WebClient(token=os.environ['SLACK_API_TOKEN'])
 
