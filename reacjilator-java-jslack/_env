@@ -1,0 +1,5 @@
+# source .env
+export SLACK_API_TOKEN=xoxp-xxx
+export SLACK_SIGNING_SECRET=6c34xxx
+# Place "google-service-account.json" under src/main/resources
+export GOOGLE_APPLICATION_CREDENTIALS=google-service-account.json
