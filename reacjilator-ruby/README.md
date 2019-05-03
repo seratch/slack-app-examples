@@ -1,4 +1,4 @@
-## reacjilator in Java + jSlack
+## reacjilator in Ruby
 
 Original: https://github.com/slackapi/reacjilator
 
