@@ -1,8 +1,16 @@
+#
+# A Ruby implementation of https://github.com/slackapi/reacjilator
+#
+# Author: Kazuhiro Sera @seratch
+# MIT License as with the original code
+#
+
 require 'json'
 require 'slack-ruby-client'
 require "google/cloud/translate"
 
 def events(event:, context:)
+
   # Load language code master data
   all_lang_codes = {}
   File.open('langcode.json') do |file|
@@ -22,17 +30,18 @@ def events(event:, context:)
   # Google Translate API
   google_translate_api = Google::Cloud::Translate.new
 
-  # common response
-  ok_response = {
-    statusCode: 200,
-    headers: {'Content-Type': 'application/json'},
-    body: {ok: true}.to_json
-  }
-
   body = JSON.parse(event['body'])
   puts "body: #{body}"
 
-  # url_verification
+  # Verify "X-Slack-Signature" header
+  begin
+    Slack::Events::Request.new(HttpRequest.new(event)).verify!
+  rescue => e
+    puts "Invalid signature #{e.to_json}"
+    return { statusCode: 401 }
+  end
+
+  # Handle "url_verification" requests
   if body['type'] == 'url_verification'
     return {
       statusCode: 200,
@@ -40,6 +49,13 @@ def events(event:, context:)
       body: body['challenge']
     }
   end
+
+  # Resuable 200 OK response
+  ok_response = {
+    statusCode: 200,
+    headers: {'Content-Type': 'application/json'},
+    body: {ok: true}.to_json
+  }
 
   payload_event = body['event']
 
@@ -109,4 +125,23 @@ def events(event:, context:)
   end
 
   ok_response
+end
+
+class HttpRequest
+  attr_reader :headers, :body
+
+  class Body
+    def initialize(body)
+      @body = body
+    end
+
+    def read
+      @body
+    end
+  end
+
+  def initialize(event)
+    @headers = event['headers']
+    @body = HttpRequest::Body.new(event['body'])
+  end
 end
