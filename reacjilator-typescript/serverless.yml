@@ -16,4 +16,4 @@ functions:
     events:
       - http:
           method: post
-          path: /events
+          path: /slack/events

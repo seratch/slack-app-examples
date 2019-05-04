@@ -12,12 +12,14 @@ import { Express, Request, Response } from 'express';
 import * as bodyParser from 'body-parser';
 
 export const app: Express = express();
-app.use(bodyParser.json());
+// app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 
 // ----------------
 // Slack
 import * as Slack from '@slack/web-api';
+const { verifyRequestSignature } = require('@slack/events-api/dist/');
+
 import * as SlackWebApi from 'seratch-slack-types/web-api';
 import * as SlackEventsApi from 'seratch-slack-types/events-api';
 import * as SlackAppToolkit from 'seratch-slack-app-toolkit';
@@ -47,7 +49,7 @@ const googleApi: GoogleTranslateApi = new GoogleTranslateApi(googleApiCredential
 
 // ----------------
 // Enable debug logging if true
-const debug: boolean = false;
+const debug: boolean = true;
 // lang code mapping data
 import { langcode } from './langcode';
 
@@ -163,9 +165,21 @@ slackEventsOperator.add('reaction_added', new Op<ReactionAdded>(
   }
 ));
 
-app.post('/events', function (req: Request, res: Response) {
+app.post('/slack/events', function (req: Request, res: Response) {
   if (debug) {
     console.log(req.body);
   }
-  slackEventsOperator.dispatch(req.body, req, res);
+  const requestBody = req.body.toString();
+  try {
+    // https://github.com/slackapi/node-slack-events-api/blob/v2.2.0/src/http-handler.js#L22-L58
+    verifyRequestSignature({
+      signingSecret: process.env.SLACK_SIGNING_SECRET,
+      requestSignature: req.get('X-Slack-Signature'),
+      requestTimestamp: req.get('X-Slack-Request-Timestamp'),
+      body: requestBody
+    });
+  } catch (verificationErr) {
+    return res.status(401).json({ ok: false });
+  }
+  slackEventsOperator.dispatch(JSON.parse(requestBody), req, res);
 });

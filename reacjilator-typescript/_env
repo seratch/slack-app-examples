@@ -1,4 +1,5 @@
 # source .env
 export SLACK_API_TOKEN=xoxp-xxx
+export SLACK_SIGNING_SECRET=6c3xxx
 export GOOGLE_PROJECT_ID=xxx
 export GOOGLE_KEY=xxx-xxx-xxx-xxx
