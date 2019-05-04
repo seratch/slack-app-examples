@@ -1,0 +1,23 @@
+*.class
+target
+/bin/
+/.settings/
+.project
+.classpath
+
+# Package Files
+*.jar
+*.war
+*.ear
+
+# Serverless directories
+.serverless
+
+.env
+.gcp
+google-service-account.json
+
+.idea/
+*.iml
+
+template.yml
