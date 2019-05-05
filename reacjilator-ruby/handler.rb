@@ -6,26 +6,18 @@
 #
 
 require 'json'
+require 'cgi'
 require 'slack-ruby-client'
 require "google/cloud/translate"
 
 def events(event:, context:)
 
   # Load language code master data
-  all_lang_codes = {}
-  File.open('langcode.json') do |file|
-    all_lang_codes = JSON.parse(file.read)
-  end
+  all_lang_codes = LangCodesLoader.load()
 
   # Slack Web API
-  Slack.configure do |config|
-    config.token = ENV['SLACK_API_TOKEN']
-  end
-  Slack::Events.configure do |config|
-    config.signing_secret = ENV['SLACK_SIGNING_SECRET']
-  end
-
-  slack_client = Slack::Web::Client.new
+  init_slack_api()
+  slack_api = Slack::Web::Client.new
 
   # Google Translate API
   google_translate_api = Google::Cloud::Translate.new
@@ -49,13 +41,6 @@ def events(event:, context:)
       body: body['challenge']
     }
   end
-
-  # Resuable 200 OK response
-  ok_response = {
-    statusCode: 200,
-    headers: {'Content-Type': 'application/json'},
-    body: {ok: true}.to_json
-  }
 
   payload_event = body['event']
 
@@ -90,7 +75,7 @@ def events(event:, context:)
   channel_id = payload_event['item']['channel']
   thread_ts = payload_event['item']['ts']
 
-  replies_resp = slack_client.conversations_replies(
+  replies_resp = slack_api.conversations_replies(
     channel: channel_id,
     ts: thread_ts
   )
@@ -99,14 +84,15 @@ def events(event:, context:)
     first_message = messages.first
     text = first_message['text']
     if text
-      translated_text = google_translate_api.translate(text, to: lang).try(:to_str)
+      translated_text = google_translate_api.translate(text, to: lang).try(:text)
       messages.each do |msg|
-        if msg['text'] == translated_text
+        existing_message = CGI.unescapeHTML(msg['text'])
+        if translated_text == existing_message
           puts 'Skipped: already posted'
           return ok_response
         end
       end
-      post_resp = slack_client.chat_postMessage(
+      post_resp = slack_api.chat_postMessage(
         channel: channel_id,
         text: translated_text,
         thread_ts: thread_ts,
@@ -144,4 +130,32 @@ class HttpRequest
     @headers = event['headers']
     @body = HttpRequest::Body.new(event['body'])
   end
+end
+
+class LangCodesLoader
+  def self.load(filename = 'langcode.json')
+    all_lang_codes = {}
+    File.open(filename) do |file|
+      all_lang_codes = JSON.parse(file.read)
+    end
+    all_lang_codes
+  end
+end
+
+def init_slack_api()
+  Slack.configure do |config|
+    config.token = ENV['SLACK_API_TOKEN']
+  end
+  Slack::Events.configure do |config|
+    config.signing_secret = ENV['SLACK_SIGNING_SECRET']
+  end
+end
+
+# Resuable 200 OK response
+def ok_response
+  {
+    statusCode: 200,
+    headers: {'Content-Type': 'application/json'},
+    body: {ok: true}.to_json
+  }
 end
