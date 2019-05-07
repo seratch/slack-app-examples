@@ -1,0 +1,21 @@
+# `service` in serverless.yml
+export SERVERLESS_SERVICE=serverless-jslack-app
+
+# `provider.stage` in serverless.ymk (e.g., dev, prod)
+export SERVERLESS_STAGE=dev
+
+# slackapp.service.SlackWebApi
+export SLACK_WEBHOOK_URL=
+
+# https://api.slack.com/docs/verifying-requests-from-slack
+export SLACK_SIGNING_SECRET=
+
+# User token here
+# You can call a restricted set of Web API methods by a bot token.
+# https://api.slack.com/bot-users#methods
+export SLACK_API_TOKEN=xoxp-xxx
+
+# OAuth
+export SLACK_APP_CLIENT_ID=
+export SLACK_APP_CLIENT_SECRET=
+export SLACK_APP_REDIRECT_URI=

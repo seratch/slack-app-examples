@@ -1,0 +1,22 @@
+# build
+target/
+
+# IntelliJ IDEA
+.idea/
+*.iml
+*.ipr
+*.iws
+
+# npm
+node_modules/
+
+# Serverless Framework
+.serverless/
+
+# macOS
+.DS_Store
+
+# AWS SAM
+template.yml
+
+.env*

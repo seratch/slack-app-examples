@@ -1,0 +1,128 @@
+# --------------------------------------
+# Serverless Framework Configuration
+#
+# The official documents: https://serverless.com/framework/docs/
+#
+
+# --------------------------------------
+service: ${env:SERVERLESS_SERVICE, 'serverless-jslack-app'}
+
+# --------------------------------------
+# You can pin your service to only deploy with a specific Serverless version
+frameworkVersion: "=1.41.1"
+
+plugins:
+  # Enable to export the settings managed by serverless as SAM template.yml
+  - serverless-sam
+
+# --------------------------------------
+provider:
+  name: aws
+  runtime: java8
+  region: us-east-1
+  stage: ${opt:stage, 'dev'}
+  environment:
+    SERVERLESS_STAGE: ${env:SERVERLESS_STAGE, 'dev'}
+    SLACK_WEBHOOK_URL: ${env:SLACK_WEBHOOK_URL}
+    SLACK_API_TOKEN: ${env:SLACK_API_TOKEN}
+    SLACK_APP_CLIENT_ID: ${env:SLACK_APP_CLIENT_ID}
+    SLACK_APP_CLIENT_SECRET: ${env:SLACK_APP_CLIENT_SECRET}
+    SLACK_SIGNING_SECRET: ${env:SLACK_SIGNING_SECRET}
+    SLACK_APP_REDIRECT_URI: ${env:SLACK_APP_REDIRECT_URI}
+  iamRoleStatements:
+    - Effect: Allow
+      Action:
+        - lambda:InvokeFunction
+        - lambda:InvokeAsync
+      Resource: "*"
+
+# --------------------------------------
+# you can add packaging information here
+package:
+  # target/{artifactId in pom.xml}-{version in pom.xml}.jar
+  artifact: target/app-0.1.jar
+
+# --------------------------------------
+# API Gateway / Lambda Functions
+functions:
+  installation:
+    handler: slackapp.handler.InstallationHandler
+    timeout: 10 # optional, in seconds, default is 6
+    events:
+      - http:
+          path: slack/installation
+          method: get
+  oauth-callback:
+    handler: slackapp.handler.OAuthCallbackHandler
+    timeout: 10 # optional, in seconds, default is 6
+    events:
+      - http:
+          path: slack/oauth
+          method: get
+  echo-command:
+    handler: slackapp.handler.EchoCommandHandler
+    events:
+      - http:
+          path: slack/echo-command
+          method: post
+  events:
+    handler: slackapp.handler.EventsHandler
+    timeout: 10 # optional, in seconds, default is 6
+    events:
+      - http:
+          path: slack/events
+          method: post
+  interactivity:
+    handler: slackapp.handler.InteractivityHandler
+    timeout: 10 # optional, in seconds, default is 6
+    events:
+      - http:
+          path: slack/interactivity
+          method: post
+  warmup:
+    handler: slackapp.handler.WarmupHandler
+    timeout: 120 # optional, in seconds, default is 6
+    events:
+      - schedule: rate(5 minutes)
+
+#    The following are a few example events you can configure
+#    NOTE: Please make sure to change your handler code to work with those events
+#    Check the event documentation for details
+#    events:
+#      - http:
+#          path: users/create
+#          method: get
+#      - websocket: $connect
+#      - s3: ${env:BUCKET}
+#      - schedule: rate(10 minutes)
+#      - sns: greeter-topic
+#      - stream: arn:aws:dynamodb:region:XXXXXX:table/foo/stream/1970-01-01T00:00:00.000
+#      - alexaSkill: amzn1.ask.skill.xx-xx-xx-xx
+#      - alexaSmartHome: amzn1.ask.skill.xx-xx-xx-xx
+#      - iot:
+#          sql: "SELECT * FROM 'some_topic'"
+#      - cloudwatchEvent:
+#          event:
+#            source:
+#              - "aws.ec2"
+#            detail-type:
+#              - "EC2 Instance State-change Notification"
+#            detail:
+#              state:
+#                - pending
+#      - cloudwatchLog: '/aws/lambda/hello'
+#      - cognitoUserPool:
+#          pool: MyUserPool
+#          trigger: PreSignUp
+
+# you can add CloudFormation resource templates here
+#resources:
+#  Resources:
+#    NewResource:
+#      Type: AWS::S3::Bucket
+#      Properties:
+#        BucketName: my-new-bucket
+#  Outputs:
+#     NewOutput:
+#       Description: "Description for the output"
+#       Value: "Some output value"
