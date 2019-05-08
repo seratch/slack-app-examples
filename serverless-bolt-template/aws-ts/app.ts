@@ -145,7 +145,7 @@ expressApp.get('/slack/oauth', (req: Request, res: Response) => {
     client_secret: process.env.SLACK_CLIENT_SECRET,
     redirect_uri: process.env.SLACK_REDIRECT_URI
   })
-    .then(apiRes => {
+    .then((apiRes: WebApi.OauthAccessResponse) => {
       if (apiRes.ok) {
         console.log(`Succeeded! ${JSON.stringify(apiRes)}`)
         // TODO: show a complete webpage here
