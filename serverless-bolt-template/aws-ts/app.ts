@@ -74,7 +74,7 @@ app.action('button_click', ({ body, ack, say }) => {
 });
 
 // Handle `/echo` command invocations
-app.command('/echo', async ({ command, ack, say }) => {
+app.command('/echo', ({ command, ack, say }) => {
   // Acknowledge command request
   ack();
   say(`You said "${command.text}"`);
@@ -88,7 +88,7 @@ app.message('42', ({ message }) => {
     text: 'The answer to life, the universe and everything',
     thread_ts: message.ts
   })
-    .then(res => {
+    .then((res: WebApi.ChatPostMessageResponse) => {
       if (res.ok) {
         console.log(`Succeeded ${JSON.stringify(res.message)}`)
       } else {

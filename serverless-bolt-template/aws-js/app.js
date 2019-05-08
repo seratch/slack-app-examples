@@ -22,7 +22,7 @@ app.client = new WebClient(process.env.SLACK_API_TOKEN);
 // ------------------------------------------------------
 
 // React to "app_mention" events
-app.event('app_mention', async ({ event, say }) => {
+app.event('app_mention', ({ event, say }) => {
   app.client.users.info({ user: event.user })
     .then(res => {
       if (res.ok) {
