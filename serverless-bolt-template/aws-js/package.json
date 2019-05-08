@@ -1,0 +1,26 @@
+{
+  "name": "bot-serverless-aws",
+  "version": "1.0.0",
+  "description": "Serverless Slack app built with Bolt, which runs on AWS",
+  "main": "app.js",
+  "dependencies": {
+    "@slack/bolt": "^1.0.1",
+    "@slack/events-api": "^2.2.0",
+    "@slack/web-api": "^5.0.1",
+    "@slack/webhook": "^5.0.0",
+    "serverless": "^1.41.1",
+    "serverless-http": "^2.0.1"
+  },
+  "devDependencies": {
+    "serverless-offline": "^4.10.0"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "Slack",
+    "Serverless"
+  ],
+  "author": "Awesome developers",
+  "license": "MIT"
+}

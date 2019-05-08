@@ -1,0 +1,76 @@
+# Welcome to Serverless!
+#
+# This file is the main config file for your service.
+# It's very minimal at this point and uses default values.
+# You can always add more config options for more control.
+# We've included some commented out config examples here.
+# Just uncomment any of them to get that config option.
+#
+# For full config options, check the docs:
+#    docs.serverless.com
+#
+# Happy Coding!
+
+plugins:
+  - serverless-offline
+
+service: bolt-serverless-aws
+
+# You can pin your service to only deploy with a specific Serverless version
+# Check out our docs for more details
+frameworkVersion: "=1.41.1"
+
+provider:
+  name: aws
+  runtime: nodejs8.10
+  region: ap-northeast-1 # Tokyo Region
+  environment:
+    SERVERLESS_STAGE: ${env:SERVERLESS_STAGE, 'dev'}
+    SLACK_WEBHOOK_URL: ${env:SLACK_WEBHOOK_URL}
+    SLACK_API_TOKEN: ${env:SLACK_API_TOKEN}
+    SLACK_BOT_TOKEN: ${env:SLACK_BOT_TOKEN}
+    SLACK_APP_CLIENT_ID: ${env:SLACK_APP_CLIENT_ID}
+    SLACK_APP_CLIENT_SECRET: ${env:SLACK_APP_CLIENT_SECRET}
+    SLACK_SIGNING_SECRET: ${env:SLACK_SIGNING_SECRET}
+    SLACK_APP_REDIRECT_URI: ${env:SLACK_APP_REDIRECT_URI}
+
+# you can add statements to the Lambda function's IAM Role here
+#  iamRoleStatements:
+#    - Effect: "Allow"
+#      Action:
+#        - "s3:ListBucket"
+#      Resource: { "Fn::Join" : ["", ["arn:aws:s3:::", { "Ref" : "ServerlessDeploymentBucket" } ] ]  }
+#    - Effect: "Allow"
+#      Action:
+#        - "s3:PutObject"
+#      Resource:
+#        Fn::Join:
+#          - ""
+#          - - "arn:aws:s3:::"
+#            - "Ref" : "ServerlessDeploymentBucket"
+#            - "/*"
+
+# you can add packaging information here
+#package:
+#  include:
+#    - include-me.js
+#    - include-me-dir/**
+#  exclude:
+#    - exclude-me.js
+#    - exclude-me-dir/**
+
+functions:
+  app:
+    handler: handler.app
+    events:
+      # Bolt App
+      - http:
+          method: post
+          path: /slack/events
+      # OAuth Flow
+      - http:
+          method: get
+          path: /slack/installation
+      - http:
+          method: get
+          path: /slack/oauth
