@@ -152,7 +152,7 @@ expressApp.get('/slack/oauth', (req, res) => {
       }
     }).catch(reason => {
       console.error(`Failed because ${reason}`)
-        // TODO: show a complete webpage here
-        res.status(500).send(`Something went wrong! reason: ${reason}`);
+      // TODO: show a complete webpage here
+      res.status(500).send(`Something went wrong! reason: ${reason}`);
     });
 });
