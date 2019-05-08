@@ -69,22 +69,22 @@ public class EchoCommandHandler implements RequestHandler<ApiGatewayRequest, Api
                 if (webhookResponse.getCode() == 200) {
                     log.info("Successfully sent a message to the webhook: {}", webhookResponse);
                     return ApiGatewayResponse.builder()
-                            .setStatusCode(200)
-                            .setHeaders(Collections.singletonMap("Content-Type", "application/json"))
-                            .setObjectBody(responseBody)
+                            .statusCode(200)
+                            .headers(Collections.singletonMap("Content-Type", "application/json"))
+                            .objectBody(responseBody)
                             .build();
                 } else {
                     log.error("Got an error from the webhook: {}", webhookResponse);
-                    return ApiGatewayResponse.builder().setStatusCode(500).build();
+                    return ApiGatewayResponse.builder().statusCode(500).build();
                 }
             } catch (IOException e) {
                 log.error("Failed to call the webhook because {}", e.getMessage(), e);
-                return ApiGatewayResponse.builder().setStatusCode(500).build();
+                return ApiGatewayResponse.builder().statusCode(500).build();
             }
 
         } else {
             // invalid signature
-            return ApiGatewayResponse.builder().setStatusCode(401).build();
+            return ApiGatewayResponse.builder().statusCode(401).build();
         }
     }
 

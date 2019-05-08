@@ -94,7 +94,7 @@ public class InteractivityHandler implements RequestHandler<ApiGatewayRequest, A
                                                 .text("Replace this with...")
                                                 .type(Action.Type.SELECT)
                                                 .options(Arrays.asList(
-                                                        Option.builder().text("image").value("image").build(),
+                                                        Option.builder().text("Image").value("image").build(),
                                                         Option.builder().text("Emoji").value("emoji").build()
                                                 ))
                                                 .build()
@@ -115,7 +115,7 @@ public class InteractivityHandler implements RequestHandler<ApiGatewayRequest, A
 
                 if (payload.getActions() == null || payload.getActions().size() == 0) {
                     log.warn("Invalid payload - no actions detected: {}", payload);
-                    return ApiGatewayResponse.builder().setStatusCode(400).build();
+                    return ApiGatewayResponse.builder().statusCode(400).build();
                 }
                 if (payload.getActions().size() > 1) {
                     log.warn("Unexpectedly got 2+ actions: {}", payload);
@@ -130,19 +130,31 @@ public class InteractivityHandler implements RequestHandler<ApiGatewayRequest, A
                     return sendActionResponse(payload.getResponseUrl(), actionResponse);
 
                 } else if (Actions.ChooseAnOptionInSelection.equals(action.getName())) {
-                    // TODO:
-//                            String selectedOption = action.getSelectedOptions().get(0);
-//                            if (selectedOption.equals("image")) {
-//                            } else if (selectedOption.equals("emoji")) {
-//                            }
-                    ActionResponse actionResponse = ActionResponse.builder()
-                            .replaceOriginal(true)
-                            .text("TODO")
-                            .build();
+                    AttachmentActionPayload.Action.SelectedOption selectedOption = action.getSelectedOptions().get(0);
+                    if (selectedOption != null) {
+                        String selectedOptionValue = selectedOption.getValue();
+                        if (selectedOptionValue.equals("image")) {
+                            ActionResponse actionResponse = ActionResponse.builder()
+                                    .replaceOriginal(true)
+                                    .text("https://platform.slack-edge.com/img/default_application_icon.png")
+                                    .build();
+                            return sendActionResponse(payload.getResponseUrl(), actionResponse);
+
+                        } else if (selectedOptionValue.equals("emoji")) {
+                            ActionResponse actionResponse = ActionResponse.builder()
+                                    .replaceOriginal(true)
+                                    .text("Thanks :smiley_cat:")
+                                    .build();
+                            return sendActionResponse(payload.getResponseUrl(), actionResponse);
+
+                        }
+                    }
+                    ActionResponse actionResponse = ActionResponse.builder().text("Nothing to do?").build();
                     return sendActionResponse(payload.getResponseUrl(), actionResponse);
+
                 } else {
                     log.error("An unknown action detected: {}", payloadString);
-                    return ApiGatewayResponse.builder().setStatusCode(400).build();
+                    return ApiGatewayResponse.builder().statusCode(400).build();
                 }
 
             } else if (MessageActionPayload.TYPE.equals(type)) {
@@ -168,20 +180,20 @@ public class InteractivityHandler implements RequestHandler<ApiGatewayRequest, A
 
                     } else {
                         log.error("Got an error from conversations.replies API: {}", apiResponse.getError());
-                        return ApiGatewayResponse.builder().setStatusCode(500).build();
+                        return ApiGatewayResponse.builder().statusCode(500).build();
                     }
                 } catch (IOException | SlackApiException e) {
                     log.error("Failed to call conversations.replies API because {}", e.getMessage(), e);
-                    return ApiGatewayResponse.builder().setStatusCode(500).build();
+                    return ApiGatewayResponse.builder().statusCode(500).build();
                 }
             } else {
                 log.error("An unknown pattern detected: {}", payloadString);
-                return ApiGatewayResponse.builder().setStatusCode(400).build();
+                return ApiGatewayResponse.builder().statusCode(400).build();
             }
 
         } else {
             // invalid signature
-            return ApiGatewayResponse.builder().setStatusCode(401).build();
+            return ApiGatewayResponse.builder().statusCode(401).build();
         }
     }
 
@@ -190,14 +202,14 @@ public class InteractivityHandler implements RequestHandler<ApiGatewayRequest, A
             WebhookResponse webhookResponse = responder.send(responseUrl, actionResponse);
             if (webhookResponse.getCode() == 200) {
                 log.info("Successfully replaced the original message: {}", webhookResponse);
-                return ApiGatewayResponse.builder().setStatusCode(200).build();
+                return ApiGatewayResponse.builder().statusCode(200).build();
             } else {
                 log.error("Failed to send a response - status: {}", webhookResponse.getCode(), webhookResponse.getMessage());
-                return ApiGatewayResponse.builder().setStatusCode(500).build();
+                return ApiGatewayResponse.builder().statusCode(500).build();
             }
         } catch (IOException e) {
             log.error("Failed to send a response because {}", e.getMessage(), e);
-            return ApiGatewayResponse.builder().setStatusCode(500).build();
+            return ApiGatewayResponse.builder().statusCode(500).build();
         }
     }
 

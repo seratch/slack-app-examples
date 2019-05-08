@@ -38,7 +38,7 @@ public class InstallationHandler implements RequestHandler<ApiGatewayRequest, Ap
             return ApiGatewayResponse.build302Response(APP_URL + state);
 
         } catch (Exception e) {
-            return ApiGatewayResponse.builder().setStatusCode(500).build();
+            return ApiGatewayResponse.builder().statusCode(500).build();
         }
     }
 

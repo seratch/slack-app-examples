@@ -29,8 +29,9 @@ public class WarmupHandler implements RequestHandler<ApiGatewayRequest, ApiGatew
     private static List<String> functionNamesToWarmup = Stream.of(
             "echo-command", // functions.{name} in serverless.yml
             "events",
+            "installation",
             "interactivity",
-            "oauth"
+            "oauth-callback"
     ).map(name -> functionNamePrefix() + name).collect(toList());
 
     @Override

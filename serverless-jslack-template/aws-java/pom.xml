@@ -14,6 +14,15 @@
         <aws.sdk.version>1.11.546</aws.sdk.version>
     </properties>
 
+    <!--
+    <repositories>
+        <repository>
+            <id>sonatype staging</id>
+            <url>https://oss.sonatype.org/content/repositories/staging/</url>
+        </repository>
+    </repositories>
+    -->
+
     <dependencies>
         <dependency>
             <groupId>org.projectlombok</groupId>
@@ -24,7 +33,7 @@
         <dependency>
             <groupId>com.github.seratch</groupId>
             <artifactId>jslack</artifactId>
-            <version>1.5.5</version>
+            <version>1.5.6</version>
         </dependency>
         <dependency>
             <groupId>org.slf4j</groupId>

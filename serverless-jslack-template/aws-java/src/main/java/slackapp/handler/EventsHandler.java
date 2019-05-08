@@ -61,9 +61,9 @@ public class EventsHandler implements RequestHandler<ApiGatewayRequest, ApiGatew
             if (UrlVerificationPayload.TYPE.equals(eventType)) {
                 // url_verification: https://api.slack.com/events/url_verification
                 ApiGatewayResponse response = ApiGatewayResponse.builder()
-                        .setStatusCode(200)
-                        .setHeaders(Collections.singletonMap("Content-Type", "text/plain"))
-                        .setRawBody(payload.get("challenge").getAsString())
+                        .statusCode(200)
+                        .headers(Collections.singletonMap("Content-Type", "text/plain"))
+                        .rawBody(payload.get("challenge").getAsString())
                         .build();
                 log.info("response: {}", gson.toJson(response));
                 return response;
@@ -74,14 +74,14 @@ public class EventsHandler implements RequestHandler<ApiGatewayRequest, ApiGatew
 
                 // Need to return 200 OK within 3 seconds here
                 return ApiGatewayResponse.builder()
-                        .setStatusCode(200)
-                        .setHeaders(Collections.singletonMap("Content-Type", "application/json"))
-                        .setObjectBody(Collections.singletonMap("ok", true))
+                        .statusCode(200)
+                        .headers(Collections.singletonMap("Content-Type", "application/json"))
+                        .objectBody(Collections.singletonMap("ok", true))
                         .build();
             }
         } else {
             // invalid signature
-            return ApiGatewayResponse.builder().setStatusCode(401).build();
+            return ApiGatewayResponse.builder().statusCode(401).build();
         }
     }
 
