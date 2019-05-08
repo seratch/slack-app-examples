@@ -1,0 +1,17 @@
+# Slack Tokens https://api.slack.com/docs/oauth
+export SLACK_API_TOKEN=xoxp-xxxxxxxxx
+export SLACK_BOT_TOKEN=xoxb-xxxxxxxxx
+
+# X-Slack-Signature https://api.slack.com/docs/verifying-requests-from-slack
+export SLACK_SIGNING_SECRET=xxxxxxxxx
+
+# OAuth Credentials https://api.slack.com/apps/{apiAppId}/general
+export SLACK_CLIENT_ID=xxxxxxxxx.xxxxxxxxx
+export SLACK_CLIENT_SECRET=xxxxxxxxx
+export SLACK_REDIRECT_URI=https://www.example.com/...
+
+# Incoming Webhook https://api.slack.com/apps/{apiAppId}/incoming-webhooks
+export SLACK_WEBHOOK_URL=https://hooks.slack.com/...
+
+# Serverless Framework
+export SERVERLESS_STAGE=dev
