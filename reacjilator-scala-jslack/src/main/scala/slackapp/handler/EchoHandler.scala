@@ -17,16 +17,16 @@ class EchoHandler extends RequestHandler[ApiGatewayRequest, ApiGatewayResponse] 
     log.info(s"request: ${req}")
 
     if (!signatureVerifier.isValid(req) && !aws.isLocalDev(context)) {
-      response.setStatusCode(401).build
+      response.statusCode(401).build
     } else {
       req.getBody match {
         case WarmupHandler.payloadString =>
-          response.setStatusCode(200).build
+          response.statusCode(200).build
         case _ =>
           response
-            .setStatusCode(200)
-            .setHeaders(Map("Content-Type" -> "application/json").asJava)
-            .setObjectBody(req.getQueryStringParameters)
+            .statusCode(200)
+            .headers(Map("Content-Type" -> "application/json").asJava)
+            .objectBody(req.getQueryStringParameters)
             .build
       }
     }

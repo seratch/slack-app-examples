@@ -52,8 +52,8 @@ public class WarmupHandler implements RequestHandler<ApiGatewayRequest, ApiGatew
         }
 
         return ApiGatewayResponse.builder()
-                .setStatusCode(200)
-                .setObjectBody("Done")
+                .statusCode(200)
+                .objectBody("Done")
                 .build();
     }
 }

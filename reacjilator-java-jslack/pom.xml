@@ -34,7 +34,7 @@
         <dependency>
             <groupId>com.github.seratch</groupId>
             <artifactId>jslack</artifactId>
-            <version>1.5.5</version>
+            <version>1.5.6</version>
         </dependency>
         <dependency>
             <groupId>com.google.cloud</groupId>
@@ -59,7 +59,7 @@
         <dependency>
             <groupId>com.amazonaws</groupId>
             <artifactId>aws-java-sdk-lambda</artifactId>
-            <version>1.11.534</version>
+            <version>1.11.546</version>
         </dependency>
         <dependency>
             <groupId>junit</groupId>

@@ -15,13 +15,12 @@ import lombok.extern.slf4j.Slf4j;
 import slackapp_backend.service.AmazonWebServices;
 import slackapp_backend.service.SlackEventsOperator;
 
-import java.util.HashMap;
-import java.util.Map;
+import java.util.Collections;
 
 @Slf4j
 public class SlackEventsHandler implements RequestHandler<ApiGatewayRequest, ApiGatewayResponse> {
 
-    private final AmazonWebServices AWS = new AmazonWebServices();
+    private final AmazonWebServices aws = new AmazonWebServices();
     private final SlackEventsOperator slackEventsOperator = SlackEventsOperator.getInstance();
     private final SlackSignatureVerifier signatureVerifier = new SlackSignatureVerifier();
     private final Gson gson = GsonFactory.createSnakeCase();
@@ -30,8 +29,8 @@ public class SlackEventsHandler implements RequestHandler<ApiGatewayRequest, Api
     public ApiGatewayResponse handleRequest(ApiGatewayRequest req, Context context) {
         logRequest(req, context);
 
-        if (!signatureVerifier.isValid(req) && !AWS.isLocalDev(context)) {
-            return ApiGatewayResponse.builder().setStatusCode(401).build();
+        if (!signatureVerifier.isValid(req) && !aws.isLocalDev(context)) {
+            return ApiGatewayResponse.builder().statusCode(401).build();
         }
 
         String body = req.getBody();
@@ -46,14 +45,14 @@ public class SlackEventsHandler implements RequestHandler<ApiGatewayRequest, Api
                 return handleUrlVerification(payload);
             } else {
                 // events subscription
-                if (AWS.isLocalDev(context)) {
+                if (aws.isLocalDev(context)) {
                     // local dev
                     slackEventsOperator.handleSynchronously(body);
                     // may be timed out towards requests from Slack Platform
                     return OK_RESPONSE;
 
                 } else {
-                    // on AWS
+                    // on aws
                     if (req.getPath() == null) { // this means this is an internal request
                         // do blocking here
                         slackEventsOperator.handleSynchronously(body);
@@ -63,7 +62,7 @@ public class SlackEventsHandler implements RequestHandler<ApiGatewayRequest, Api
                     } else {
                         // Kick this function asynchronously
                         req.setPath(null); // The "path" can be modified only here
-                        InvokeResult invokeResult = AWS.invokeLambdaFunction(context, req);
+                        InvokeResult invokeResult = aws.invokeLambdaFunction(context, req);
                         if (invokeResult.getStatusCode() != 200) {
                             log.error("Failed to invoke a function because {}", invokeResult.getFunctionError());
                         }
@@ -84,21 +83,21 @@ public class SlackEventsHandler implements RequestHandler<ApiGatewayRequest, Api
     }
 
     private static ApiGatewayResponse handleUrlVerification(JsonObject payload) {
-        Map<String, String> headers = new HashMap<>();
-        headers.put("Content-Type", "text/plain");
         return ApiGatewayResponse.builder()
-                .setStatusCode(200)
-                .setHeaders(headers)
-                .setObjectBody(payload.get("challenge").getAsString())
+                .statusCode(200)
+                .headers(Collections.singletonMap("Content-Type", "text/plain"))
+                .rawBody(payload.get("challenge").getAsString())
                 .build();
     }
 
     private static final ApiGatewayResponse OK_RESPONSE;
 
     static {
-        Map<String, Object> body = new HashMap<>();
-        body.put("ok", true);
-        OK_RESPONSE = ApiGatewayResponse.builder().setStatusCode(200).setObjectBody(body).build();
+        OK_RESPONSE = ApiGatewayResponse.builder()
+                .statusCode(200)
+                .headers(Collections.singletonMap("Content-Type", "application/json"))
+                .objectBody(Collections.singletonMap("ok", true))
+                .build();
     }
 
 }

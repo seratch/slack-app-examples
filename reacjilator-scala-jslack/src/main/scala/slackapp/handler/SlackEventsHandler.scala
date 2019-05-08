@@ -17,7 +17,7 @@ class SlackEventsHandler extends RequestHandler[ApiGatewayRequest, ApiGatewayRes
 
   override def handleRequest(req: ApiGatewayRequest, context: Context): ApiGatewayResponse = {
     if (!signatureVerifier.isValid(req) && !aws.isLocalDev(context)) {
-      response.setStatusCode(401).build
+      response.statusCode(401).build
     } else {
       req.getBody match {
         case WarmupHandler.payloadString => // internal warmup request
@@ -29,9 +29,9 @@ class SlackEventsHandler extends RequestHandler[ApiGatewayRequest, ApiGatewayRes
             case UrlVerificationPayload.TYPE =>
               // url_verification: https://api.slack.com/events/url_verification
               response
-                .setStatusCode(200)
-                .setHeaders(Map("Content-Type" -> "text/plain").asJava)
-                .setObjectBody(payload.get("challenge").getAsString)
+                .statusCode(200)
+                .headers(Map("Content-Type" -> "text/plain").asJava)
+                .objectBody(payload.get("challenge").getAsString)
                 .build
 
             case _ if aws.isLocalDev(context) => // local dev
@@ -79,8 +79,8 @@ object SlackEventsHandler {
 
   private val successResponse: ApiGatewayResponse = {
     response
-      .setStatusCode(200)
-      .setObjectBody(Map("ok" -> true).asJava)
+      .statusCode(200)
+      .objectBody(Map("ok" -> true).asJava)
       .build
   }
 

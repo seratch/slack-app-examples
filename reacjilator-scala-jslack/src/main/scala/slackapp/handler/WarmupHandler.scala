@@ -34,8 +34,8 @@ class WarmupHandler extends RequestHandler[ApiGatewayRequest, ApiGatewayResponse
       }
     }
     response
-      .setStatusCode(200)
-      .setObjectBody("Done")
+      .statusCode(200)
+      .objectBody(Map("ok" -> true).asJava)
       .build
   }
 
