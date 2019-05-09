@@ -8,14 +8,18 @@ import { Request, Response, Application } from 'express';
 // ------------------------------------------------------
 // Bot app
 // https://slack.dev/bolt/
-import { App } from '@slack/bolt';
+import { App, ExpressReceiver } from '@slack/bolt';
+
+const expressReceiver = new ExpressReceiver({
+  signingSecret: process.env.SLACK_SIGNING_SECRET
+  // Endpoints will be attached later by calling the declared methods in Bolt's App
+});
+export const expressApp: Application = expressReceiver.app;
+
 const app: App = new App({
   token: process.env.SLACK_BOT_TOKEN,
-  signingSecret: process.env.SLACK_SIGNING_SECRET
+  receiver: expressReceiver
 });
-// NOTE: accessing a private field
-// https://github.com/slackapi/bolt/blob/2e9ebbcad6934db7c8073f44da51c85eda8af65c/src/ExpressReceiver.ts#L27
-export const expressApp: Application = (app as any).receiver.app;
 
 // ------------------------------------------------------
 // If you need to use API methods that are not listed on https://api.slack.com/bot-users#methods

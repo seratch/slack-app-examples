@@ -33,12 +33,17 @@ import { langcode } from './langcode';
 
 // ----------------
 // Slack Bolt App
+import { App, ExpressReceiver } from '@slack/bolt';
 
-import { App } from '@slack/bolt';
+const expressReceiver = new ExpressReceiver({
+  signingSecret: process.env.SLACK_SIGNING_SECRET
+  // Endpoints will be attached later by calling the declared methods in Bolt's App
+});
+export const expressApp = expressReceiver.app;
 
-export const app = new App({
-  signingSecret: process.env.SLACK_SIGNING_SECRET,
-  token: process.env.SLACK_BOT_TOKEN
+const app: App = new App({
+  token: process.env.SLACK_BOT_TOKEN,
+  receiver: expressReceiver
 });
 
 app.event('reaction_added', async ({ event }) => {
