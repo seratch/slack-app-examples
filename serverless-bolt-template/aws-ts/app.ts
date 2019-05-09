@@ -12,7 +12,6 @@ import { App, ExpressReceiver } from '@slack/bolt';
 
 const expressReceiver = new ExpressReceiver({
   signingSecret: process.env.SLACK_SIGNING_SECRET
-  // Endpoints will be attached later by calling the declared methods in Bolt's App
 });
 export const expressApp: Application = expressReceiver.app;
 

@@ -3,15 +3,15 @@
 // ------------------------------------------------------
 // Bot app
 // https://slack.dev/bolt/
-const { App } = require('@slack/bolt');
-const app = new App({
-  token: process.env.SLACK_BOT_TOKEN,
+const { App, ExpressReceiver } = require('@slack/bolt');
+const expressReceiver = new ExpressReceiver({
   signingSecret: process.env.SLACK_SIGNING_SECRET
 });
-// NOTE: accessing a private field
-// https://github.com/slackapi/bolt/blob/2e9ebbcad6934db7c8073f44da51c85eda8af65c/src/ExpressReceiver.ts#L27
-const expressApp = app.receiver.app;
-module.exports.expressApp = expressApp;
+const app = new App({
+  token: process.env.SLACK_BOT_TOKEN,
+  receiver: expressReceiver
+});
+module.exports.expressApp = expressReceiver.app;
 
 // ------------------------------------------------------
 // If you need to use API methods that are not listed on https://api.slack.com/bot-users#methods
