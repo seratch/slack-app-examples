@@ -41,6 +41,7 @@ Download json file and place it as `~/.gcloud/keyfile.json` (you can change the 
 ### Deploy the app
 
 ```bash
+npm i -g serverless
 sls deploy
 ```
 

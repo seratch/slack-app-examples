@@ -48,7 +48,7 @@ function handler(req, res) {
         // React to "app_mention" events
         slackWebApi.chat.postMessage({
           channel: payload.event.channel,
-          text: `Hi! <@${res.user.name}>`
+          text: `Hi! <@${payload.event.user}>`
         })
           .then(handleApiResponse)
           .catch(handleApiError)
