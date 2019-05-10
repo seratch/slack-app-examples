@@ -40,7 +40,7 @@ class SlackEventsHandler extends RequestHandler[ApiGatewayRequest, ApiGatewayRes
               successResponse
 
             case _ => // on AWS
-              if (req.getPath == null) { // this means this is an internal request
+              if (req.getPath == null) { // The null path value here means this is an internal request
                 // do blocking here
                 slackEventsOperator.handleSynchronously(body)
                 // actually not in a hurry here
