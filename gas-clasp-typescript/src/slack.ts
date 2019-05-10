@@ -12,7 +12,7 @@ const apiToken = PropertiesService.getScriptProperties().getProperty("SLACK_API_
 function apiTest(): R.ApiTestResponse {
   const httpResponse = UrlFetchApp.fetch(
     url('api.test'),
-    options<A.APITestArguments>(apiToken, {
+    params<A.APITestArguments>(apiToken, {
       'foo': 'bar'
     }));
   const response = as<R.ApiTestResponse>(httpResponse);
@@ -24,7 +24,7 @@ function apiTest(): R.ApiTestResponse {
 function chatPostMessage(text: string): R.ChatPostMessageResponse {
   const httpResponse = UrlFetchApp.fetch(
     url('chat.postMessage'),
-    options<A.ChatPostMessageArguments>(apiToken, {
+    params<A.ChatPostMessageArguments>(apiToken, {
       channel: '#random',
       text: text || 'Hi!'
     }));
@@ -38,7 +38,7 @@ function chatPostMessage(text: string): R.ChatPostMessageResponse {
 function channelsList(): R.ChannelsListResponse {
   const response = as<R.ChannelsListResponse>(UrlFetchApp.fetch(
     url('channels.list'),
-    options<A.ChannelsListArguments>(apiToken, {
+    params<A.ChannelsListArguments>(apiToken, {
       exclude_archived: true,
       exclude_members: true
     })
@@ -62,13 +62,15 @@ function conversationsHistory() {
 
   const httpResponse = UrlFetchApp.fetch(
     url('conversations.history'),
-    options<A.ConversationsHistoryArguments>(apiToken, {
+    params<A.ConversationsHistoryArguments>(apiToken, {
       channel: channelId
     })
   );
   const response = as<R.ConversationsHistoryResponse>(httpResponse);
   // `response.messages` can be a large array
   // print(response);
+  if (response.error) console.error(`Got an error from Slack API: ${response.error}`)
+
   response.messages.forEach(message => {
     const messagePart = `${message.text} by @${message.username} ts:${message.ts}`;
     const reactions = message.reactions
@@ -79,6 +81,29 @@ function conversationsHistory() {
   });
 }
 
+// https://api.slack.com/methods/emoji.list
+function emojiList(): R.EmojiListResponse {
+  const response = as<R.EmojiListResponse>(UrlFetchApp.fetch(
+    url('emoji.list'),
+    params<A.EmojiListArguments>(apiToken, {
+    })
+  ));
+
+  print(response);
+  return response;
+}
+
+// https://api.slack.com/methods/users.lookupByEamil
+function usersLookupByEamil() {
+  const url = 'https://slack.com/api/users.lookupByEmail';
+  const httpResponse = UrlFetchApp.fetch(url, params<A.UsersLookupByEmailArguments>(
+    apiToken,
+    { email: '{your email address}' }
+  ));
+  const response = JSON.parse(httpResponse.getContentText()) as R.UsersLookupByEmailResponse;
+  print(response);
+  return response;
+}
 
 // ---------------------------
 // Common Functions
@@ -93,17 +118,15 @@ function json(value: object): string {
 
 import { WebAPICallOptions } from '@slack/web-api/dist/WebClient';
 
-function options<A extends WebAPICallOptions>(
+function params<A extends WebAPICallOptions>(
   token: string,
   payload: A): GoogleAppsScript.URL_Fetch.URLFetchRequestOptions {
-  const options: GoogleAppsScript.URL_Fetch.URLFetchRequestOptions = {
+  return {
     method: 'post',
     contentType: 'application/x-www-form-urlencoded',
     headers: { 'Authorization': `Bearer ${token}` },
     payload: payload,
   };
-  console.log(options);
-  return options;
 }
 
 function as<T>(response: GoogleAppsScript.URL_Fetch.HTTPResponse): T {
