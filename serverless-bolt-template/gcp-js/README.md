@@ -1,4 +1,4 @@
-# Slack App backend built with Bolt on AWS
+# Slack App backend built with Bolt on Google Cloud Functions
 
 ## Run the app on your local machine
 
