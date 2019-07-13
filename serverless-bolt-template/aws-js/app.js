@@ -124,7 +124,7 @@ app.error((error) => {
 
 // ------------------------------------------------------
 // OAuth flow
-expressApp.get('/slack/installation', (req, res) => {
+module.exports.expressApp.get('/slack/installation', (req, res) => {
   const clientId = process.env.SLACK_CLIENT_ID;
   const scopesCsv = 'commands,users:read,users:read.email,team:read'; // TODO: modify
   const state = 'randomly-generated-string'; // TODO: implement the logic
@@ -132,7 +132,7 @@ expressApp.get('/slack/installation', (req, res) => {
   res.redirect(url);
 });
 
-expressApp.get('/slack/oauth', (req, res) => {
+module.exports.expressApp.get('/slack/oauth', (req, res) => {
   // TODO: make sure if req.query.state is valid
   app.client.oauth.access({
     code: req.query.code,
