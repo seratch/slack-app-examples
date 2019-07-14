@@ -11,6 +11,7 @@
     "@slack/bolt": "^1.0.1",
     "@slack/events-api": "^2.2.0",
     "@slack/web-api": "^5.0.1",
+    "axios": "^0.19.0",
     "serverless": "^1.41.1",
     "serverless-http": "^2.0.1",
     "source-map-support": "^0.5.10"
@@ -24,7 +25,7 @@
     "serverless-webpack": "^5.2.0",
     "ts-loader": "^5.3.3",
     "typescript": "^3.2.4",
-    "webpack": "^4.29.0"
+    "webpack": "^4.35.3"
   },
   "author": "The serverless webpack authors (https://github.com/elastic-coders/serverless-webpack)",
   "license": "MIT"

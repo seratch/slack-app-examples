@@ -28,18 +28,18 @@
         <dependency>
             <groupId>org.projectlombok</groupId>
             <artifactId>lombok</artifactId>
-            <version>1.18.6</version>
+            <version>1.18.8</version>
             <scope>provided</scope>
         </dependency>
         <dependency>
             <groupId>com.github.seratch</groupId>
             <artifactId>jslack</artifactId>
-            <version>1.5.6</version>
+            <version>1.7.4</version>
         </dependency>
         <dependency>
             <groupId>com.google.cloud</groupId>
             <artifactId>google-cloud-translate</artifactId>
-            <version>1.70.0</version>
+            <version>1.82.0</version>
         </dependency>
         <dependency>
             <groupId>org.slf4j</groupId>
@@ -59,7 +59,7 @@
         <dependency>
             <groupId>com.amazonaws</groupId>
             <artifactId>aws-java-sdk-lambda</artifactId>
-            <version>1.11.546</version>
+            <version>1.11.592</version>
         </dependency>
         <dependency>
             <groupId>junit</groupId>

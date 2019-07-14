@@ -10,6 +10,7 @@
     "@google-cloud/translate": "2.1.4",
     "@slack/events-api": "^2.2.0",
     "@slack/web-api": "^5.0.1",
+    "axios": "^0.19.0",
     "body-parser": "^1.19.0",
     "express": "^4.16.4",
     "seratch-slack-app-toolkit": "0.0.4",
@@ -26,7 +27,7 @@
     "serverless-webpack": "^5.2.0",
     "ts-loader": "^5.3.3",
     "typescript": "^3.2.4",
-    "webpack": "^4.29.0"
+    "webpack": "^4.35.3"
   },
   "author": "The serverless webpack authors (https://github.com/elastic-coders/serverless-webpack)",
   "license": "MIT"

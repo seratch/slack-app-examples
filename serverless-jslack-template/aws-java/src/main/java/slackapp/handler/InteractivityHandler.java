@@ -4,11 +4,9 @@ import com.amazonaws.services.lambda.runtime.Context;
 import com.amazonaws.services.lambda.runtime.RequestHandler;
 import com.github.seratch.jslack.Slack;
 import com.github.seratch.jslack.api.methods.SlackApiException;
-import com.github.seratch.jslack.api.methods.request.conversations.ConversationsRepliesRequest;
 import com.github.seratch.jslack.api.methods.response.conversations.ConversationsRepliesResponse;
 import com.github.seratch.jslack.api.model.Action;
 import com.github.seratch.jslack.api.model.Attachment;
-import com.github.seratch.jslack.api.model.Option;
 import com.github.seratch.jslack.api.webhook.WebhookResponse;
 import com.github.seratch.jslack.app_backend.interactive_messages.ResponseSender;
 import com.github.seratch.jslack.app_backend.interactive_messages.payload.AttachmentActionPayload;
@@ -79,6 +77,13 @@ public class InteractivityHandler implements RequestHandler<ApiGatewayRequest, A
                 // Interaction with the following outmoded `attachments` will be handled by the case for `AttachmentActionPayload.TYPE` below
                 // * https://api.slack.com/docs/message-buttons
                 // * https://api.slack.com/docs/messages/builder
+                Action.Option opt1 = new Action.Option();
+                opt1.setText("Image");
+                opt1.setValue("image");
+                Action.Option opt2 = new Action.Option();
+                opt2.setText("Emoji");
+                opt2.setValue("emoji");
+
                 List<Attachment> attachments = Arrays.asList(
                         Attachment.builder()
                                 .callbackId("the_callback_id")
@@ -93,10 +98,7 @@ public class InteractivityHandler implements RequestHandler<ApiGatewayRequest, A
                                                 .name(Actions.ChooseAnOptionInSelection)
                                                 .text("Replace this with...")
                                                 .type(Action.Type.SELECT)
-                                                .options(Arrays.asList(
-                                                        Option.builder().text("Image").value("image").build(),
-                                                        Option.builder().text("Emoji").value("emoji").build()
-                                                ))
+                                                .options(Arrays.asList(opt1, opt2))
                                                 .build()
                                 )).build()
                 );
@@ -164,13 +166,11 @@ public class InteractivityHandler implements RequestHandler<ApiGatewayRequest, A
                 try {
                     // Bot tokens are not capable of calling this method.
                     // https://api.slack.com/bot-users#methods
-                    ConversationsRepliesResponse apiResponse = slack.methods().conversationsReplies(
-                            ConversationsRepliesRequest.builder()
+                    ConversationsRepliesResponse apiResponse = slack.methods().conversationsReplies(r -> r
                                     .token(slackApiToken)
                                     .ts(payload.getMessageTs())
                                     .channel(payload.getChannel().getId())
-                                    .limit(1)
-                                    .build());
+                                    .limit(1));
                     if (apiResponse.isOk()) {
                         ActionResponse actionResponse = ActionResponse.builder()
                                 .replaceOriginal(true)
