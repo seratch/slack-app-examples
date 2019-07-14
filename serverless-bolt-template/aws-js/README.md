@@ -60,7 +60,7 @@ https://api.slack.com/apps
     - Unsupported in this example; If you're interested in this outmoded one, you can return it in any messages with attachments
 - Enable Event Subscriptions
   - Request URL: `https://{ngrok domain}/slack/events` or `https://{aws}/{stage}/slack/events`
-  - Enable `app_metion`, `message.channels`
+  - Subscribe to Bot Events: `app_mention`, `message.channels` 
 - Add Necessary Permissions
   - `bot`
   - `chat:write:bot`
