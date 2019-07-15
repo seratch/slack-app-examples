@@ -1,0 +1,21 @@
+{
+    "name": "Bolt app on Heroku",
+    "description": "Bolt example app in TypeScript on Heroku",
+    "repository": "https://github.com/seratch/bolt-on-heroku",
+    "keywords": [
+        "Slack",
+        "Slack API",
+        "Heroku"
+    ],
+    "env": {
+        "SLACK_SIGNING_SECRET": {
+            "description": "Slack Signing Secret",
+            "value": "cda6e9cbf46a********************"
+        },
+        "SLACK_BOT_TOKEN": {
+            "description": "Slack App Bot Token",
+            "value": "xoxb-************-************-************************"
+        }
+    },
+    "image": "heroku/nodejs"
+}
