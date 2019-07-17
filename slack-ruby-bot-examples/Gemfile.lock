@@ -1,0 +1,57 @@
+GEM
+  remote: https://rubygems.org/
+  specs:
+    activesupport (5.2.3)
+      concurrent-ruby (~> 1.0, >= 1.0.2)
+      i18n (>= 0.7, < 2)
+      minitest (~> 5.1)
+      tzinfo (~> 1.1)
+    async (1.20.1)
+      console (~> 1.0)
+      nio4r (~> 2.3)
+      timers (~> 4.1)
+    async-io (1.24.0)
+      async (~> 1.14)
+    async-websocket (0.8.0)
+      async-io
+      websocket-driver (~> 0.7.0)
+    concurrent-ruby (1.1.5)
+    console (1.4.0)
+    faraday (0.15.4)
+      multipart-post (>= 1.2, < 3)
+    faraday_middleware (0.13.1)
+      faraday (>= 0.7.4, < 1.0)
+    gli (2.18.1)
+    hashie (3.6.0)
+    i18n (1.6.0)
+      concurrent-ruby (~> 1.0)
+    minitest (5.11.3)
+    multipart-post (2.1.1)
+    nio4r (2.4.0)
+    slack-ruby-bot (0.12.0)
+      hashie
+      slack-ruby-client (>= 0.14.0)
+    slack-ruby-client (0.14.2)
+      activesupport
+      faraday (>= 0.9)
+      faraday_middleware
+      gli
+      hashie
+      websocket-driver
+    thread_safe (0.3.6)
+    timers (4.3.0)
+    tzinfo (1.2.5)
+      thread_safe (~> 0.1)
+    websocket-driver (0.7.1)
+      websocket-extensions (>= 0.1.0)
+    websocket-extensions (0.1.4)
+
+PLATFORMS
+  ruby
+
+DEPENDENCIES
+  async-websocket (~> 0.8.0)
+  slack-ruby-bot
+
+BUNDLED WITH
+   2.0.2
