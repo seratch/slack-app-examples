@@ -1,9 +1,9 @@
-# SLACK_API_TOKEN=xoxb-xxx bundle exec ruby say_hello.rb
+# SLACK_BOT_TOKEN=xoxb-xxx bundle exec ruby say_hello.rb
 require 'slack-ruby-client'
 require 'logger'
 
 Slack.configure do |config|
-  config.token = ENV['SLACK_API_TOKEN']
+  config.token = ENV['SLACK_BOT_TOKEN']
 end
 client = Slack::Web::Client.new
 client.logger.level = Logger::DEBUG
