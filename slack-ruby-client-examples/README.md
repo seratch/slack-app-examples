@@ -31,12 +31,12 @@ https://ngrok.com/
 SLACK_BOT_TOKEN=xoxb-xxx bundle exec ruby say_hello.rb
 ```
 
-## channels.rb
+## conversations.rb
 
 ### How run
 
 ```bash
-SLACK_BOT_TOKEN=xoxb-xxx bundle exec ruby channels.rb
+SLACK_BOT_TOKEN=xoxb-xxx bundle exec ruby conversations.rb
 ```
 
 ## events.rb
