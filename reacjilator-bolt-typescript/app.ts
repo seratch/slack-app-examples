@@ -82,71 +82,67 @@ app.event('reaction_added', async ({ event }) => {
     const messageTs: string = event.item['ts'];
 
     // Fetch all the messages in the thread
-    slackApiClient.conversations.replies({
-      channel: channelId,
-      ts: messageTs,
-      inclusive: true
-    }) // The returned value is a Promise - chaining operations started here
-      .then((repliesRes: SlackWebApi.ConversationsRepliesResponse) => {
-        if (debug) {
-          console.log(repliesRes.messages);
-        }
-        const messages = repliesRes.messages;
-        const message = messages[0];
-        if (message.text) {
-          // Call Google Translate API to get a translated text
-          googleApi.translate(message.text, lang)
-            .then((array) => {
-              const [translatedText, googleApiRes] = array; // [string, r.Response]
-              if (debug) {
-                console.log(`Response from Google Translate API: ${JSON.stringify(googleApiRes)}`);
-              }
+    const repliesRes: SlackWebApi.ConversationsRepliesResponse =
+      await slackApiClient.conversations.replies({
+        channel: channelId,
+        ts: messageTs,
+        inclusive: true
+      });
+    if (debug) {
+      console.log(repliesRes.messages);
+    }
+    const messages = repliesRes.messages;
+    const message = messages[0];
+    if (message.text) {
+      // Call Google Translate API to get a translated text
+      googleApi.translate(message.text, lang)
+        .then((array) => {
+          const [translatedText, googleApiRes] = array; // [string, r.Response]
+          if (debug) {
+            console.log(`Response from Google Translate API: ${JSON.stringify(googleApiRes)}`);
+          }
 
-              // To avoid posting same messages several times, make sure if a same message in the thread doesn't exist
-              let alreadyPosted: boolean = false;
-              messages.forEach(messageInTheThread => {
-                if (!alreadyPosted && messageInTheThread.text && messageInTheThread.text === translatedText) {
-                  alreadyPosted = true;
+          // To avoid posting same messages several times, make sure if a same message in the thread doesn't exist
+          let alreadyPosted: boolean = false;
+          messages.forEach(messageInTheThread => {
+            if (!alreadyPosted && messageInTheThread.text && messageInTheThread.text === translatedText) {
+              alreadyPosted = true;
+            }
+          });
+          if (alreadyPosted) {
+            return;
+          }
+
+          // Post the translated text as a following message in the thread
+          slackApiClient.chat.postMessage({
+            channel: channelId,
+            text: translatedText,
+            as_user: false,
+            username: "Reacjilator Bot",
+            thread_ts: message.thread_ts ? message.thread_ts : message.ts
+          })
+            .then((postRes: SlackWebApi.ChatPostMessageResponse) => {
+              if (postRes.ok) {
+                console.log(`Successfully posted a translated message (ts: ${postRes.ts})`);
+              } else {
+                if (debug) {
+                  console.error(postRes);
                 }
-              });
-              if (alreadyPosted) {
-                return;
+                console.error(`Got an error from chat.postMessage (error: ${postRes.error})`);
               }
-
-              // Post the translated text as a following message in the thread
-              slackApiClient.chat.postMessage({
-                channel: channelId,
-                text: translatedText,
-                as_user: false,
-                username: "Reacjilator Bot",
-                thread_ts: message.thread_ts ? message.thread_ts : message.ts
-              })
-                .then((postRes: SlackWebApi.ChatPostMessageResponse) => {
-                  if (postRes.ok) {
-                    console.log(`Successfully posted a translated message (ts: ${postRes.ts})`);
-                  } else {
-                    if (debug) {
-                      console.error(postRes);
-                    }
-                    console.error(`Got an error from chat.postMessage (error: ${postRes.error})`);
-                  }
-                })
-                .catch(reason => {
-                  console.error(`Failed to post a message because ${reason}`);
-                })
-
             })
             .catch(reason => {
-              console.error(`Failed to call Google Translate API because ${reason}`);
+              console.error(`Failed to post a message because ${reason}`);
             })
 
-        } else {
-          console.log(`Skipped the message because it doesn't have text property (ts: ${message.ts})`);
-        }
-      })
-      .catch(reason => {
-        console.error(`Failed to fetch message replies because ${reason}`);
-      });
+        })
+        .catch(reason => {
+          console.error(`Failed to call Google Translate API because ${reason}`);
+        })
+
+    } else {
+      console.log(`Skipped the message because it doesn't have text property (ts: ${message.ts})`);
+    }
   }
   catch (error) {
     console.error(error);

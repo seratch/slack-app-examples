@@ -15,13 +15,13 @@ import six
 import html
 
 # Slack
-import slack
+from slack.web import WebClient
 from slackeventsapi import SlackEventAdapter
 
 # --------------------
 # Slack API
 # Slack Web API Client with sufficient permissions
-slack_web_api_client = slack.WebClient(token=os.environ['SLACK_API_TOKEN'])
+slack_web_api_client = WebClient(token=os.environ['SLACK_API_TOKEN'])
 
 # In order for our application to verify the authenticity
 # of requests from Slack, we'll compare the request signature

@@ -7,11 +7,13 @@ const config = require('./config.js');
 // https://slack.dev/bolt/
 const { App, ExpressReceiver } = require('@slack/bolt');
 const expressReceiver = new ExpressReceiver({
-  signingSecret: config.SLACK_SIGNING_SECRET
+  signingSecret: config.SLACK_SIGNING_SECRET,
+  processBeforeResponse: true,
 });
 const app = new App({
   token: config.SLACK_BOT_TOKEN,
-  receiver: expressReceiver
+  receiver: expressReceiver,
+  processBeforeResponse: true,
 });
 const expressApp = expressReceiver.app;
 
@@ -24,25 +26,25 @@ app.client = new WebClient(config.SLACK_API_TOKEN);
 // ------------------------------------------------------
 
 // React to "app_mention" events
-app.event('app_mention', ({ event, say }) => {
-  app.client.users.info({ user: event.user })
-    .then(res => {
-      if (res.ok) {
-        say({
-          text: `Hi! <@${res.user.name}>`
-        });
-      } else {
-        console.error(`Failed because of ${res.error}`)
-      }
-    }).catch(reason => {
-      console.error(`Failed because ${reason}`)
-    })
+app.event('app_mention', async ({ client, event, say }) => {
+  try {
+    const res = await client.users.info({ user: event.user })
+    if (res.ok) {
+      await say({
+        text: `Hi! <@${res.user.name}>`
+      });
+    } else {
+      console.error(`Failed because of ${res.error}`)
+    }  
+  } catch (reason) {
+    console.error(`Failed because ${reason}`)
+  }
 });
 
 // React to message.channels event
-app.message('hello', ({ message, say }) => {
+app.message('hello', async ({ message, say }) => {
   // say() sends a message to the channel where the event was triggered
-  say({
+  await say({
     blocks: [
       {
         "type": "section",
@@ -64,31 +66,31 @@ app.message('hello', ({ message, say }) => {
 });
 
 // Handle the click event (action_id: button_click) on a message posted by the above hello handler
-app.action('button_click', ({ body, ack, say }) => {
+app.action('button_click', async ({ body, ack, say }) => {
   // Acknowledge the action
-  ack();
-  say(`<@${body.user.id}> clicked the button`);
+  await ack();
+  await say(`<@${body.user.id}> clicked the button`);
 });
 
 // Handle `/echo` command invocations
 app.command('/echo', async ({ command, ack, say }) => {
   // Acknowledge command request
-  ack();
-  say(`You said "${command.text}"`);
+  await ack();
+  await say(`You said "${command.text}"`);
 });
 
 // A simple example to use WebApi client
-app.message('42', ({ message, say }) => {
+app.message('42', async ({ message, say }) => {
   console.log(`Got a message: ${JSON.stringify(message)}`);
-  say('The answer to life, the universe and everything');
+  await say('The answer to life, the universe and everything');
 })
 
 // A simple example to use Webhook internally
-app.message('webhook', ({ message }) => {
+app.message('webhook', async ({ message }) => {
   const { IncomingWebhook } = require('@slack/webhook');
   const url = config.SLACK_WEBHOOK_URL;
   const webhook = new IncomingWebhook(url);
-  webhook.send({
+  await webhook.send({
     text: message.text.split("webhook")[1],
     unfurl_links: true
   })

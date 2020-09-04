@@ -3,15 +3,17 @@
 const config = require('./config.js');
 const { App, ExpressReceiver } = require('@slack/bolt');
 const expressReceiver = new ExpressReceiver({
-    signingSecret: config.SLACK_SIGNING_SECRET,
-    endpoints: '/events'
+  signingSecret: config.SLACK_SIGNING_SECRET,
+  endpoints: '/events',
+  processBeforeResponse: true,
 });
 const app = new App({
-    receiver: expressReceiver,
-    token: config.SLACK_BOT_TOKEN
+  receiver: expressReceiver,
+  token: config.SLACK_BOT_TOKEN,
+  processBeforeResponse: true,
 });
-app.message('hello', ({ message, say }) => {
-    say({ "text": `Hey there <@${message.user}>!` });
+app.message('hello', async ({ message, say }) => {
+  await say({ "text": `Hey there <@${message.user}>!` });
 });
 app.error(console.log);
 

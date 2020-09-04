@@ -8,10 +8,8 @@
   },
   "dependencies": {
     "@google-cloud/translate": "2.1.4",
-    "@slack/bolt": "^1.0.1",
-    "@slack/events-api": "^2.2.0",
-    "@slack/web-api": "^5.0.1",
-    "axios": "^0.19.0",
+    "@slack/bolt": "^2.2.3",
+    "@slack/web-api": "^5.11.0",
     "serverless": "^1.41.1",
     "serverless-http": "^2.0.1",
     "source-map-support": "^0.5.10"
@@ -21,11 +19,11 @@
     "@types/express": "^4.16.1",
     "@types/node": "^10.12.18",
     "seratch-slack-types": "^0.2.1",
-    "serverless-offline": "^4.9.4",
-    "serverless-webpack": "^5.2.0",
-    "ts-loader": "^5.3.3",
-    "typescript": "^3.2.4",
-    "webpack": "^4.35.3"
+    "serverless-offline": "^6.7.0",
+    "serverless-webpack": "^5.3.4",
+    "ts-loader": "^8.0.3",
+    "typescript": "^4.0.2",
+    "webpack": "^4.44.1"
   },
   "author": "The serverless webpack authors (https://github.com/elastic-coders/serverless-webpack)",
   "license": "MIT"

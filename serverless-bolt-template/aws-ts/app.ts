@@ -11,13 +11,15 @@ import { Request, Response, Application } from 'express';
 import { App, ExpressReceiver } from '@slack/bolt';
 
 const expressReceiver = new ExpressReceiver({
-  signingSecret: process.env.SLACK_SIGNING_SECRET
+  signingSecret: process.env.SLACK_SIGNING_SECRET,
+  processBeforeResponse: true,
 });
 export const expressApp: Application = expressReceiver.app;
 
 const app: App = new App({
   token: process.env.SLACK_BOT_TOKEN,
-  receiver: expressReceiver
+  receiver: expressReceiver,
+  processBeforeResponse: true,
 });
 
 // ------------------------------------------------------
@@ -30,24 +32,20 @@ app.client = new WebClient(process.env.SLACK_API_TOKEN);
 
 // React to "app_mention" events
 app.event('app_mention', async ({ event, say }) => {
-  app.client.users.info({ user: event.user })
-    .then((res: WebApi.UsersInfoResponse) => {
-      if (res.ok) {
-        say({
-          text: `Hi! <@${res.user.name}>`
-        });
-      } else {
-        console.error(`Failed because of ${res.error}`)
-      }
-    }).catch(reason => {
-      console.error(`Failed because ${reason}`)
-    })
+  const res: WebApi.UsersInfoResponse = await app.client.users.info({ user: event.user });
+  if (res.ok) {
+    say({
+      text: `Hi! <@${res.user.name}>`
+    });
+  } else {
+    console.error(`Failed because of ${res.error}`)
+  }
 });
 
 // React to message.channels event
-app.message('hello', ({ message, say }) => {
+app.message('hello', async ({ message, say }) => {
   // say() sends a message to the channel where the event was triggered
-  say({
+  await say({
     "text": null,
     "blocks": [
       {
@@ -70,56 +68,48 @@ app.message('hello', ({ message, say }) => {
 });
 
 // Handle the click event (action_id: button_click) on a message posted by the above hello handler
-app.action('button_click', ({ body, ack, say }) => {
+app.action('button_click', async ({ body, ack, say }) => {
   // Acknowledge the action
-  ack();
-  say(`<@${body.user.id}> clicked the button`);
+  await ack();
+  await say(`<@${body.user.id}> clicked the button`);
 });
 
 // Handle `/echo` command invocations
-app.command('/echo', ({ command, ack, say }) => {
+app.command('/echo', async ({ command, ack, say }) => {
   // Acknowledge command request
-  ack();
-  say(`You said "${command.text}"`);
+  await ack();
+  await say(`You said "${command.text}"`);
 });
 
 // A simple example to use WebApi client
-app.message('42', ({ message }) => {
+app.message('42', async ({ message }) => {
   // use chat.postMessage over say method
-  app.client.chat.postMessage({
+  const res: WebApi.ChatPostMessageResponse = await app.client.chat.postMessage({
     channel: message.channel,
     text: 'The answer to life, the universe and everything',
     thread_ts: message.ts
-  })
-    .then((res: WebApi.ChatPostMessageResponse) => {
-      if (res.ok) {
-        console.log(`Succeeded ${JSON.stringify(res.message)}`)
-      } else {
-        console.error(`Failed because of ${res.error}`)
-      }
-    }).catch(reason => {
-      console.error(`Failed because ${reason}`)
-    })
-})
+  });
+  if (res.ok) {
+    console.log(`Succeeded ${JSON.stringify(res.message)}`)
+  } else {
+    console.error(`Failed because of ${res.error}`)
+  }
+});
 
 // A simple example to use Webhook internally
-app.message('webhook', ({ message }) => {
+app.message('webhook', async ({ message }) => {
   const { IncomingWebhook } = require('@slack/webhook');
   const url = process.env.SLACK_WEBHOOK_URL;
   const webhook = new IncomingWebhook(url);
-  webhook.send({
+  const res = await webhook.send({
     text: message.text.split("webhook")[1],
     unfurl_links: true
-  })
-    .then((res) => {
-      console.log(`Succeeded ${JSON.stringify(res)}`)
-    }).catch(reason => {
-      console.error(`Failed because ${reason}`)
-    })
-})
+  });
+  console.log(`Succeeded ${JSON.stringify(res)}`)
+});
 
 // Check the details of the error to handle cases where you should retry sending a message or stop the app
-app.error((error) => {
+app.error(async (error) => {
   console.error(error);
 });
 
