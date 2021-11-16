@@ -14,7 +14,7 @@
     "@slack/types": "^1.8.0",
     "@slack/web-api": "^5.11.0",
     "@types/google-apps-script": "0.0.46",
-    "axios": "^0.21.1",
+    "axios": "^0.21.2",
     "seratch-slack-types": "^0.2.7",
     "tslint": "^5.18.0"
   }
