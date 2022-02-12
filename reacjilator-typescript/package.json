@@ -10,7 +10,7 @@
     "@google-cloud/translate": "2.1.4",
     "@slack/events-api": "^2.2.0",
     "@slack/web-api": "^5.0.1",
-    "axios": "^0.21.1",
+    "axios": "^0.21.2",
     "body-parser": "^1.19.0",
     "express": "^4.16.4",
     "seratch-slack-app-toolkit": "0.0.4",
