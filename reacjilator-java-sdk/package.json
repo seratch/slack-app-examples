@@ -7,7 +7,7 @@
     "aws-sdk": "^2.814.0"
   },
   "devDependencies": {
-    "serverless": "^1.41.1",
+    "serverless": "^3.25.1",
     "serverless-sam": "^0.2.0"
   },
   "scripts": {
