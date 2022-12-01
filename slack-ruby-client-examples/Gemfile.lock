@@ -18,22 +18,22 @@ GEM
     minitest (5.16.2)
     multi_json (1.15.0)
     multipart-post (2.1.1)
-    mustermann (1.1.1)
+    mustermann (2.0.2)
       ruby2_keywords (~> 0.0.1)
     rack (2.2.4)
-    rack-protection (2.2.0)
+    rack-protection (2.2.3)
       rack
     ruby2_keywords (0.0.5)
-    sinatra (2.2.0)
-      mustermann (~> 1.0)
+    sinatra (2.2.3)
+      mustermann (~> 2.0)
       rack (~> 2.2)
-      rack-protection (= 2.2.0)
+      rack-protection (= 2.2.3)
       tilt (~> 2.0)
-    sinatra-contrib (2.2.0)
+    sinatra-contrib (2.2.3)
       multi_json
-      mustermann (~> 1.0)
-      rack-protection (= 2.2.0)
-      sinatra (= 2.2.0)
+      mustermann (~> 2.0)
+      rack-protection (= 2.2.3)
+      sinatra (= 2.2.3)
       tilt (~> 2.0)
     slack-ruby-client (0.14.2)
       activesupport
@@ -42,7 +42,7 @@ GEM
       gli
       hashie
       websocket-driver
-    tilt (2.0.10)
+    tilt (2.0.11)
     tzinfo (2.0.5)
       concurrent-ruby (~> 1.0)
     websocket-driver (0.7.1)
