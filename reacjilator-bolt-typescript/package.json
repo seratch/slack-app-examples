@@ -10,7 +10,7 @@
     "@google-cloud/translate": "2.1.4",
     "@slack/bolt": "^2.2.3",
     "@slack/web-api": "^5.11.0",
-    "serverless": "^1.41.1",
+    "serverless": "^3.25.1",
     "serverless-http": "^2.0.1",
     "source-map-support": "^0.5.10"
   },
