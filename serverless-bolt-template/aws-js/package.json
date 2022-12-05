@@ -8,7 +8,7 @@
     "serverless-http": "^2.5.0"
   },
   "devDependencies": {
-    "serverless-offline": "^6.7.0"
+    "serverless-offline": "^11.6.0"
   },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
